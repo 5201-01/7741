@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Umbra Protocol</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .terminal {
+      background: #111;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 20px #0f0;
+      text-align: center;
+    }
+    input[type="text"] {
+      background: #000;
+      border: 1px solid #0f0;
+      color: #0f0;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .puzzle {
+      margin-top: 2rem;
+    }
+    .glitch {
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px red; }
+      25% { text-shadow: -2px -2px blue; }
+      50% { text-shadow: 2px -2px lime; }
+      75% { text-shadow: -2px 2px yellow; }
+      100% { text-shadow: 2px 2px red; }
+    }
+    #revealImage {
+      margin-top: 1rem;
+      max-width: 80%;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 10px #0f0;
+    }
+    #crypticLine {
+      margin-top: 0.5rem;
+      font-style: italic;
+      color: #0f0;
+    }
+  </style>
+  <script>
+    // Block right click
+    document.addEventListener('contextmenu', e => e.preventDefault());// Block inspect and view source shortcuts
+document.addEventListener('keydown', function(e) {
+  if (
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && ['I','C','J'].includes(e.key.toUpperCase())) ||
+    (e.metaKey && e.altKey && e.key.toUpperCase() === 'I') || // macOS dev tools
+    (e.ctrlKey && e.key.toUpperCase() === 'U') ||
+    (e.metaKey && e.key.toUpperCase() === 'U')
+  ) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+});
+
+// Prevent form resubmission/data persistence on refresh
+window.addEventListener('beforeunload', function () {
+  sessionStorage.clear();
+});
+
+  </script>
+</head>
+<body>
+  <div class="terminal">
+    <p>Enter the keyword:</p>
+    <input type="text" id="input" placeholder="Type here..." />
+    <p id="message" class="hidden"></p>
+    <div id="nextPuzzle" class="hidden puzzle"></div>
+  </div>
+  <script>
+    const input = document.getElementById('input');
+    const message = document.getElementById('message');
+    const nextPuzzle = document.getElementById('nextPuzzle');function createPuzzle() {
+  nextPuzzle.innerHTML = `
+    <p><strong>Riddle:</strong></p>
+    <p>I am not alive, but I grow. I don’t have lungs, but I need air. What am I?</p>
+    <input type="text" id="riddleAnswer" placeholder="Answer..." />
+    <p id="glitchText" class="hidden">The fire is awakened...</p>
+    <img id="revealImage" class="hidden" src="7741.jpg" alt="Cryptic image" />
+    <p id="crypticLine" class="hidden">Only those who see the unseen may proceed.</p>
+  `;
+
+  const riddleInput = document.getElementById('riddleAnswer');
+  const glitchText = document.getElementById('glitchText');
+  const revealImage = document.getElementById('revealImage');
+  const crypticLine = document.getElementById('crypticLine');
+
+  riddleInput.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter') {
+      if (riddleInput.value.trim().toLowerCase() === 'fire') {
+        glitchText.textContent = 'The fire is awakened...';
+        glitchText.classList.remove('hidden');
+        glitchText.classList.add('glitch');
+        revealImage.classList.remove('hidden');
+        crypticLine.classList.remove('hidden');
+      } else {
+        glitchText.textContent = 'Wrong answer... the fire sleeps.';
+        glitchText.classList.remove('hidden');
+        glitchText.classList.remove('glitch');
+        revealImage.classList.add('hidden');
+        crypticLine.classList.add('hidden');
+      }
+    }
+  });
+}
+
+input.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    const val = input.value.trim().toLowerCase();
+    if (val === 'echo') {
+      message.textContent = 'Access Granted: In the shadows, truth is born.';
+      message.classList.remove('hidden');
+      nextPuzzle.classList.remove('hidden');
+      createPuzzle();
+    } else {
+      message.textContent = 'Access Denied';
+      message.classList.remove('hidden');
+      nextPuzzle.innerHTML = '';
+      nextPuzzle.classList.add('hidden');
+    }
+  }
+});
+
+  </script>
+</body>
+</html>
